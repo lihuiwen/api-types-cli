@@ -33,8 +33,12 @@ declare class ApiTypesGenerator {
     generateFromApis(apis: APIConfig[]): Promise<void>;
     private chunkArray;
     private showStatistics;
+    validateInterfaceName(input: string): boolean | string;
+    toPascalCase(input: string): string;
 }
 declare class ConfigGenerator {
+    private validateInterfaceName;
+    private toPascalCase;
     generate(): Promise<void>;
 }
 export { ApiTypesGenerator, ConfigGenerator };

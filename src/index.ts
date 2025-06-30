@@ -159,7 +159,7 @@ class ApiTypesGenerator {
 
     let content = '// API 类型使用示例\n\n';
     
-    // 导入示例
+    // 导入示例 - 使用正确的 PascalCase 名称
     names.slice(0, 2).forEach(name => {
       content += `import { Convert as ${name}Convert, ${name} } from './${name}';\n`;
     });
@@ -229,8 +229,14 @@ class ApiTypesGenerator {
 
     this.log(`开始生成 ${apis.length} 个接口的类型文件`, 'info');
 
+    // 先转换所有接口名称为 PascalCase
+    const processedApis = apis.map(api => ({
+      ...api,
+      name: this.toPascalCase(api.name)
+    }));
+
     // 并行处理（控制并发数）
-    const chunks = this.chunkArray(apis, this.options.parallel);
+    const chunks = this.chunkArray(processedApis, this.options.parallel);
     
     for (const chunk of chunks) {
       await Promise.allSettled(
@@ -300,10 +306,204 @@ class ApiTypesGenerator {
       console.log(`  3. 查看使用示例: cat ${outputDir}/usage-example.ts`);
     }
   }
+
+  // 添加命名验证函数
+  public validateInterfaceName(input: string): boolean | string {
+    const trimmed = input.trim();
+    
+    // 基础验证：非空
+    if (!trimmed) {
+      return '请输入接口名称';
+    }
+    
+    // 长度验证 - 放宽到更合理的限制
+    if (trimmed.length > 100) {
+      return '接口名称不能超过100个字符';
+    }
+    
+    // 字符验证：允许更多合理的字符，包括连字符（后续会转换）
+    if (!/^[a-zA-Z_][a-zA-Z0-9_\-]*$/.test(trimmed)) {
+      return '接口名称只能包含字母、数字、下划线和连字符，且必须以字母或下划线开头';
+    }
+    
+    // 关键字验证：避免 TypeScript 关键字
+    const reservedWords = [
+      'abstract', 'any', 'as', 'asserts', 'bigint', 'boolean', 'break', 'case', 'catch', 'class',
+      'const', 'constructor', 'continue', 'debugger', 'declare', 'default', 'delete', 'do',
+      'else', 'enum', 'export', 'extends', 'false', 'finally', 'for', 'from', 'function',
+      'get', 'if', 'implements', 'import', 'in', 'infer', 'instanceof', 'interface', 'is',
+      'keyof', 'let', 'module', 'namespace', 'never', 'new', 'null', 'number', 'object',
+      'package', 'private', 'protected', 'public', 'readonly', 'require', 'return', 'set',
+      'static', 'string', 'super', 'switch', 'symbol', 'this', 'throw', 'true', 'try',
+      'type', 'typeof', 'undefined', 'unique', 'unknown', 'var', 'void', 'while', 'with', 'yield'
+    ];
+    
+    if (reservedWords.includes(trimmed.toLowerCase())) {
+      return '接口名称不能使用 TypeScript 关键字';
+    }
+    
+    return true;
+  }
+
+  // 改进的 PascalCase 转换函数
+  public toPascalCase(input: string): string {
+    // 常见缩写词映射，保持正确的大小写
+    const abbreviations: Record<string, string> = {
+      'api': 'API',
+      'xml': 'XML', 
+      'html': 'HTML',
+      'css': 'CSS',
+      'json': 'JSON',
+      'url': 'URL',
+      'uri': 'URI',
+      'http': 'HTTP',
+      'https': 'HTTPS',
+      'id': 'ID',
+      'uuid': 'UUID',
+      'sql': 'SQL',
+      'db': 'DB',
+      'ui': 'UI',
+      'ux': 'UX',
+      'io': 'IO',
+      'os': 'OS',
+      'cpu': 'CPU',
+      'gpu': 'GPU',
+      'ram': 'RAM',
+      'ssd': 'SSD',
+      'hdd': 'HDD',
+      'pdf': 'PDF',
+      'zip': 'ZIP',
+      'csv': 'CSV',
+      'md5': 'MD5',
+      'sha': 'SHA',
+      'jwt': 'JWT',
+      'oauth': 'OAuth',
+      'cors': 'CORS',
+      'csrf': 'CSRF',
+      'xss': 'XSS'
+    };
+
+    return input
+      .trim()
+      // 将连字符和其他分隔符转换为下划线，便于统一处理
+      .replace(/[-\s.]+/g, '_')
+      // 移除其他特殊字符，但保留字母数字和下划线
+      .replace(/[^a-zA-Z0-9_]/g, '')
+      // 按下划线分割
+      .split('_')
+      .filter(part => part.length > 0)
+      .map(part => {
+        const lowerPart = part.toLowerCase();
+        // 检查是否为已知缩写词
+        if (abbreviations[lowerPart]) {
+          return abbreviations[lowerPart];
+        }
+        // 普通单词转换为首字母大写
+        return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+      })
+      .join('');
+  }
 }
 
 // 交互式配置生成器
 class ConfigGenerator {
+  // 改进的命名验证函数
+  private validateInterfaceName(input: string): boolean | string {
+    const trimmed = input.trim();
+    
+    // 基础验证：非空
+    if (!trimmed) {
+      return '请输入接口名称';
+    }
+    
+    // 长度验证 - 放宽到更合理的限制
+    if (trimmed.length > 100) {
+      return '接口名称不能超过100个字符';
+    }
+    
+    // 字符验证：允许更多合理的字符，包括连字符（后续会转换）
+    if (!/^[a-zA-Z_][a-zA-Z0-9_\-]*$/.test(trimmed)) {
+      return '接口名称只能包含字母、数字、下划线和连字符，且必须以字母或下划线开头';
+    }
+    
+    // 关键字验证：避免 TypeScript 关键字
+    const reservedWords = [
+      'abstract', 'any', 'as', 'asserts', 'bigint', 'boolean', 'break', 'case', 'catch', 'class',
+      'const', 'constructor', 'continue', 'debugger', 'declare', 'default', 'delete', 'do',
+      'else', 'enum', 'export', 'extends', 'false', 'finally', 'for', 'from', 'function',
+      'get', 'if', 'implements', 'import', 'in', 'infer', 'instanceof', 'interface', 'is',
+      'keyof', 'let', 'module', 'namespace', 'never', 'new', 'null', 'number', 'object',
+      'package', 'private', 'protected', 'public', 'readonly', 'require', 'return', 'set',
+      'static', 'string', 'super', 'switch', 'symbol', 'this', 'throw', 'true', 'try',
+      'type', 'typeof', 'undefined', 'unique', 'unknown', 'var', 'void', 'while', 'with', 'yield'
+    ];
+    
+    if (reservedWords.includes(trimmed.toLowerCase())) {
+      return '接口名称不能使用 TypeScript 关键字';
+    }
+    
+    return true;
+  }
+
+  // 改进的 PascalCase 转换函数
+  private toPascalCase(input: string): string {
+    // 常见缩写词映射，保持正确的大小写
+    const abbreviations: Record<string, string> = {
+      'api': 'API',
+      'xml': 'XML', 
+      'html': 'HTML',
+      'css': 'CSS',
+      'json': 'JSON',
+      'url': 'URL',
+      'uri': 'URI',
+      'http': 'HTTP',
+      'https': 'HTTPS',
+      'id': 'ID',
+      'uuid': 'UUID',
+      'sql': 'SQL',
+      'db': 'DB',
+      'ui': 'UI',
+      'ux': 'UX',
+      'io': 'IO',
+      'os': 'OS',
+      'cpu': 'CPU',
+      'gpu': 'GPU',
+      'ram': 'RAM',
+      'ssd': 'SSD',
+      'hdd': 'HDD',
+      'pdf': 'PDF',
+      'zip': 'ZIP',
+      'csv': 'CSV',
+      'md5': 'MD5',
+      'sha': 'SHA',
+      'jwt': 'JWT',
+      'oauth': 'OAuth',
+      'cors': 'CORS',
+      'csrf': 'CSRF',
+      'xss': 'XSS'
+    };
+
+    return input
+      .trim()
+      // 将连字符和其他分隔符转换为下划线，便于统一处理
+      .replace(/[-\s.]+/g, '_')
+      // 移除其他特殊字符，但保留字母数字和下划线
+      .replace(/[^a-zA-Z0-9_]/g, '')
+      // 按下划线分割
+      .split('_')
+      .filter(part => part.length > 0)
+      .map(part => {
+        const lowerPart = part.toLowerCase();
+        // 检查是否为已知缩写词
+        if (abbreviations[lowerPart]) {
+          return abbreviations[lowerPart];
+        }
+        // 普通单词转换为首字母大写
+        return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+      })
+      .join('');
+  }
+
   async generate(): Promise<void> {
     console.log(chalk.blue('🛠️  API 类型生成配置向导'));
     console.log(chalk.gray('按照提示输入信息，生成配置文件\n'));
@@ -329,7 +529,8 @@ class ConfigGenerator {
           type: 'input',
           name: 'name',
           message: '接口名称 (用作类型名):',
-          validate: (input) => input.trim() ? true : '请输入接口名称'
+          validate: (input) => this.validateInterfaceName(input),
+          filter: (input) => this.toPascalCase(input)
         },
         {
           type: 'input',
@@ -433,7 +634,8 @@ program
             type: 'input',
             name: 'name',
             message: '接口名称:',
-            validate: (input) => input.trim() ? true : '请输入接口名称'
+            validate: (input) => generator.validateInterfaceName(input),
+            filter: (input) => generator.toPascalCase(input)
           },
           {
             type: 'input',

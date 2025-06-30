@@ -13,6 +13,42 @@ npx api-types --help
 
 ## 🚀 快速开始
 
+### 接口命名规范
+
+为了生成符合 TypeScript 规范的类型文件，接口名称需要遵循以下规则：
+
+- **只能包含字母、数字、下划线和连字符**
+- **必须以字母或下划线开头**
+- **长度不超过 100 个字符**
+- **不能使用 TypeScript 关键字**
+- **会自动转换为 PascalCase 格式，并智能处理缩写词**
+
+**示例转换：**
+```
+用户输入: "github_user" 或 "githubUser" 或 "github-user"
+实际生成: "GithubUser"
+
+用户输入: "user_profile_data"
+实际生成: "UserProfileData"
+
+用户输入: "api_response" 或 "api-response"  
+实际生成: "APIResponse"
+
+用户输入: "xml_parser" 或 "xml-parser"
+实际生成: "XMLParser"
+
+用户输入: "user_id_mapping"
+实际生成: "UserIDMapping"
+```
+
+**智能缩写词处理：**
+系统会自动识别并正确处理常见的技术缩写词，包括：
+- API, XML, HTML, CSS, JSON, URL, HTTP, HTTPS
+- ID, UUID, SQL, DB, UI, UX, IO
+- JWT, OAuth, CORS, CSRF, XSS 等
+
+这确保了生成的接口名称既符合 TypeScript 规范，又保持了良好的可读性。
+
 ### 1. 单个接口生成
 ```bash
 # 交互式生成单个接口类型
