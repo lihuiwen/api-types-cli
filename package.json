@@ -4,7 +4,7 @@
   "description": "🚀 API 接口 TypeScript 类型生成器",
   "type": "module",
   "bin": {
-    "api-types": "./bin/index.js"
+    "api-types": "./bin/cli/index.js"
   },
   "main": "./bin/cli/index.js",
   "scripts": {
