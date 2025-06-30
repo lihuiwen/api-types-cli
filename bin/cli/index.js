@@ -1,10 +1,15 @@
+#!/usr/bin/env node
 import { Command } from 'commander';
+import { createRequire } from 'module';
 import { DEFAULT_OPTIONS, SUPPORTED_FORMATS } from '../utils/constants.js';
 import { EnhancedLogger } from '../utils/logger.js';
 import { handleConfigCommand } from './commands/config.js';
 import { handleGenerateCommand } from './commands/generate.js';
 import { handleInitCommand } from './commands/init.js';
 import { createHelpHeader, customHelpFormatter } from './utils/help-formatter.js';
+// 导入 package.json 获取版本号
+const require = createRequire(import.meta.url);
+const packageJson = require('../../package.json');
 // CLI 程序
 const program = new Command();
 // 设置自定义帮助
@@ -14,7 +19,7 @@ program.configureHelp({
 program
     .name('api-types')
     .description('🚀 API 接口 TypeScript 类型生成器')
-    .version('1.0.0')
+    .version(packageJson.version)
     .hook('preAction', (thisCommand) => {
     // 在任何命令执行前显示 banner（除了 help 命令）
     if (!process.argv.includes('--help') && !process.argv.includes('-h')) {
@@ -79,15 +84,7 @@ process.on('unhandledRejection', (reason) => {
     process.exit(1);
 });
 // 启动 CLI
-function isMainModule() {
-    if (process.env.NODE_ENV === 'test')
-        return false;
-    const arg1 = process.argv[1];
-    if (!arg1)
-        return false;
-    return arg1.includes('index') || arg1.endsWith('index.js') || arg1.endsWith('index.ts');
-}
-if (isMainModule()) {
+if (process.env.NODE_ENV !== 'test') {
     program.parse();
 }
 export { program };
