@@ -1,0 +1,27 @@
+- name: User
+  url: https://jsonplaceholder.typicode.com/users/1
+  method: GET
+  sampleOnly: false
+
+- name: Users
+  url: https://jsonplaceholder.typicode.com/users
+  method: GET
+  sampleOnly: true
+
+- name: Post
+  url: https://jsonplaceholder.typicode.com/posts/1
+  method: GET
+
+- name: Posts
+  url: https://jsonplaceholder.typicode.com/posts
+  method: GET
+  sampleOnly: true
+
+- name: Comment
+  url: https://jsonplaceholder.typicode.com/comments/1
+  method: GET
+
+- name: Comments
+  url: https://jsonplaceholder.typicode.com/comments
+  method: GET
+  sampleOnly: true

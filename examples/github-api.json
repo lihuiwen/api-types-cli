@@ -1,0 +1,18 @@
+[
+    {
+      "name": "GitHubUser",
+      "url": "https://api.github.com/users/octocat",
+      "method": "GET"
+    },
+    {
+      "name": "GitHubRepos",
+      "url": "https://api.github.com/users/octocat/repos",
+      "method": "GET",
+      "sampleOnly": true
+    },
+    {
+      "name": "GitHubRepo",
+      "url": "https://api.github.com/repos/microsoft/vscode",
+      "method": "GET"
+    }
+  ]

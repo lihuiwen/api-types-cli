@@ -1,0 +1,40 @@
+[
+    {
+      "name": "UserProfile",
+      "url": "https://api.company.com/v1/me",
+      "method": "GET",
+      "headers": {
+        "Authorization": "Bearer ${API_TOKEN}",
+        "X-API-Version": "v1"
+      }
+    },
+    {
+      "name": "Orders",
+      "url": "https://api.company.com/v1/orders",
+      "method": "GET",
+      "headers": {
+        "Authorization": "Bearer ${API_TOKEN}"
+      },
+      "sampleOnly": true
+    },
+    {
+      "name": "CreateOrder",
+      "url": "https://api.company.com/v1/orders",
+      "method": "POST",
+      "headers": {
+        "Authorization": "Bearer ${API_TOKEN}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "userId": 1,
+        "productId": 100,
+        "quantity": 2,
+        "shippingAddress": {
+          "street": "123 Main St",
+          "city": "Anytown",
+          "zipCode": "12345",
+          "country": "US"
+        }
+      }
+    }
+  ]
