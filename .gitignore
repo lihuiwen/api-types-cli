@@ -40,6 +40,8 @@ temp/
 *.tmp
 
 # Generated types (for testing)
-types/
 generated-types/
 api-types/
+
+# Types folder in root directory only
+/types/
