@@ -14,16 +14,28 @@
     "build": "tsc",
     "test": "jest"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lihuiwen/api-types-cli"
+  },
+  "homepage": "https://github.com/lihuiwen/api-types-cli#readme",
+  "bugs": {
+    "url": "https://github.com/lihuiwen/api-types-cli/issues"
+  },
+  "author": {
+    "name": "lihuiwen",
+    "email": "lihuiwen.mkv@gmail.com",
+    "url": "https://github.com/lihuiwen"
+  },
   "keywords": [
     "api",
     "typescript",
     "types",
-    "generator",
     "cli",
-    "quicktype",
-    "json"
+    "generator",
+    "code-generation",
+    "json-to-ts"
   ],
-  "author": "lhw",
   "license": "MIT",
   "dependencies": {
     "axios": "^1.6.0",
